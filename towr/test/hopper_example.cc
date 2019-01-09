@@ -67,6 +67,7 @@ int main()
   formulation.params_.ee_phase_durations_.push_back({0.4, 0.2, 0.4, 0.2, 0.4, 0.2, 0.2});
   formulation.params_.ee_in_contact_at_start_.push_back(true);
   formulation.params_.SetSwingConstraint();
+  formulation.params_.PenalizeEndeffectorForces();
 
   // Initialize the nonlinear-programming problem with the variables,
   // constraints and costs.
