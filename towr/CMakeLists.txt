@@ -15,6 +15,9 @@ endif()
 # so dynamic library libtowr.so retains link to ifopt_core.so
 set(CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/lib)
 
+FILE(GLOB_RECURSE LibFiles "include/*.h")
+add_custom_target(headers SOURCES ${LibFiles})
+
 # The motion-planning problem formulated through variables and constraints
 add_library(${PROJECT_NAME} SHARED
   # sample formulation usage
