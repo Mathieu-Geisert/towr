@@ -39,6 +39,9 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
+FILE(GLOB_RECURSE LibFiles "include/*.h")
+add_custom_target(headers SOURCES ${LibFiles})
+
 # The interface to derive from for ros integration
 add_library(${PROJECT_NAME} SHARED
   src/towr_ros_interface.cc

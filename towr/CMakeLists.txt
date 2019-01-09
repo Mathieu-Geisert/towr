@@ -15,6 +15,9 @@ endif()
 # so dynamic library libtowr.so retains link to ifopt_core.so
 set(CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/lib)
 
+FILE(GLOB_RECURSE LibFiles "include/*.h")
+add_custom_target(headers SOURCES ${LibFiles})
+
 # The motion-planning problem formulated through variables and constraints
 add_library(${PROJECT_NAME} SHARED
   # sample formulation usage
@@ -61,50 +64,6 @@ add_library(${PROJECT_NAME} SHARED
   src/spline_holder.cc
   src/euler_converter.cc
   src/phase_durations_observer.cc
-  include/towr/nlp_formulation.h
-  include/towr/variables/phase_spline.h
-  include/towr/variables/variable_names.h
-  include/towr/variables/nodes_variables_phase_based.h
-  include/towr/variables/nodes_variables.h
-  include/towr/variables/nodes_variables_all.h
-  include/towr/variables/spline.h
-  include/towr/variables/state.h
-  include/towr/variables/polynomial.h
-  include/towr/variables/phase_durations.h
-  include/towr/variables/nodes_observer.h
-  include/towr/variables/cartesian_dimensions.h
-  include/towr/variables/spline_holder.h
-  include/towr/variables/phase_durations_observer.h
-  include/towr/variables/euler_converter.h
-  include/towr/variables/node_spline.h
-  include/towr/models/single_rigid_body_dynamics.h
-  include/towr/models/kinematic_model.h
-  include/towr/models/dynamic_model.h
-  include/towr/models/robot_model.h
-  include/towr/models/endeffector_mappings.h
-  include/towr/models/examples/hyq_model.h
-  include/towr/models/examples/anymal_model.h
-  include/towr/models/examples/monoped_model.h
-  include/towr/models/examples/biped_model.h
-  include/towr/costs/soft_constraint.h
-  include/towr/costs/node_cost.h
-  include/towr/constraints/swing_constraint.h
-  include/towr/constraints/total_duration_constraint.h
-  include/towr/constraints/spline_acc_constraint.h
-  include/towr/constraints/terrain_constraint.h
-  include/towr/constraints/force_constraint.h
-  include/towr/constraints/dynamic_constraint.h
-  include/towr/constraints/base_motion_constraint.h
-  include/towr/constraints/range_of_motion_constraint.h
-  include/towr/constraints/time_discretization_constraint.h
-  include/towr/constraints/linear_constraint.h
-  include/towr/parameters.h
-  include/towr/initialization/biped_gait_generator.h
-  include/towr/initialization/quadruped_gait_generator.h
-  include/towr/initialization/gait_generator.h
-  include/towr/initialization/monoped_gait_generator.h
-  include/towr/terrain/height_map.h
-  include/towr/terrain/examples/height_map_examples.h
 )
 target_link_libraries(${PROJECT_NAME} 
   PUBLIC 
