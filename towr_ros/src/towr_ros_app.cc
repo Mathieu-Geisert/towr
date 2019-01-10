@@ -29,6 +29,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <towr/initialization/gait_generator.h>
 #include <towr_ros/towr_ros_interface.h>
+#include <towr/parameters.h>
 
 
 namespace towr {
@@ -74,6 +75,11 @@ public:
       params.ee_phase_durations_.push_back(gait_gen_->GetPhaseDurations(msg.total_duration, ee));
       params.ee_in_contact_at_start_.push_back(gait_gen_->IsInContactAtStart(ee));
     }
+
+    //Add costs
+    for (int i=0; i != Parameters::COST_COUNT; i++)
+        params.costs_.push_back({Parameters::CostName(i), msg.weights[i]});
+
 
     // Here you can also add other constraints or values.
     // creates smoother swing motions, not absolutely required.

@@ -38,6 +38,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <towr/terrain/height_map.h>
 #include <towr/initialization/gait_generator.h>
 #include <towr/models/robot_model.h>
+#include <towr/parameters.h>
 
 
 namespace towr {
@@ -45,12 +46,13 @@ namespace towr {
 
 enum YCursorRows {HEADING=6, OPTIMIZE=8, VISUALIZE, INITIALIZATION, PLOT,
                   REPLAY_SPEED, GOAL_POS, GOAL_ORI, ROBOT,
-                  GAIT, OPTIMIZE_GAIT, TERRAIN, DURATION, CLOSE, END};
+                  GAIT, OPTIMIZE_GAIT, TERRAIN, DURATION, COST, COST_WEIGHT, CLOSE, END};
 static constexpr int Y_STATUS      = END+1;
 static constexpr int X_KEY         = 1;
 static constexpr int X_DESCRIPTION = 10;
 static constexpr int X_VALUE       = 35;
 
+static constexpr char * costString[] = { "ForcesCostZ", "ForcesCostXY", "RotationVelCost", "EEMotionCost" };
 
 TowrUserInterface::TowrUserInterface ()
 {
@@ -77,6 +79,10 @@ TowrUserInterface::TowrUserInterface ()
   optimize_ = false;
   publish_optimized_trajectory_ = false;
   optimize_phase_durations_ = false;
+  cost_ = Parameters::CostName::ForcesCostZID;
+
+  for(int i=0; i != Parameters::CostName::COST_COUNT; i++)
+      weights_.push_back(1.);
 
   PrintScreen();
 }
@@ -176,6 +182,20 @@ TowrUserInterface::PrintScreen() const
   printw("Duration");
   wmove(stdscr, DURATION, X_VALUE);
   printw("%.2f [s]", total_duration_);
+
+  wmove(stdscr, COST, X_KEY);
+  printw("c");
+  wmove(stdscr, COST, X_DESCRIPTION);
+  printw("Cost Selection");
+  wmove(stdscr, COST, X_VALUE);
+  printw(costString[cost_]);
+
+  wmove(stdscr, DURATION, X_KEY);
+  printw("z/x");
+  wmove(stdscr, DURATION, X_DESCRIPTION);
+  printw("weight");
+  wmove(stdscr, DURATION, X_VALUE);
+  printw("%.e", weights_[cost_]);
 
   wmove(stdscr, CLOSE, X_KEY);
   printw("q");
@@ -282,7 +302,17 @@ TowrUserInterface::CallbackKey (int c)
       wmove(stdscr, Y_STATUS, 0);
       printw("In rqt_bag: right-click on xpp/state_des -> View -> Plot.\n"
              "Then expand the values you wish to plot on the right\n");
+
+    case 'c':
+      cost_ = AdvanceCircularBuffer(cost_, Parameters::CostName::COST_COUNT);
       break;
+    case 'z':
+      weights_[cost_] /= 2;
+      break;
+    case 'x':
+      weights_[cost_] *= 2;
+      break;
+
     case 'q':
       printw("Closing user interface\n");
       ros::shutdown(); break;
@@ -308,6 +338,7 @@ void TowrUserInterface::PublishCommand()
   msg.robot                    = robot_;
   msg.optimize_phase_durations = optimize_phase_durations_;
   msg.plot_trajectory          = plot_trajectory_;
+  msg.weights                  = weights_;
 
   user_command_pub_.publish(msg);
 
