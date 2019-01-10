@@ -147,9 +147,12 @@ struct Parameters {
    *  @brief Indentifiers to be used to add certain costs to the optimization
    *  problem.
    */
-  enum CostName       { ForcesCostID,    ///< sets NodeCost on force nodes
-                        EEMotionCostID   ///< sets NodeCost on endeffector velocity
-  };
+  enum CostName       { ForcesCostZID,    ///< sets NodeCost on force nodes Z
+                        ForcesCostXYID,
+                        RotationVelCostID,
+                        //RotationAccCostID,
+                        EEMotionCostID,   ///< sets NodeCost on endeffector velocity
+                        COST_COUNT};
 
   using CostWeights      = std::vector<std::pair<CostName, double>>;
   using UsedConstraints  = std::vector<ConstraintName>;
@@ -191,12 +194,12 @@ struct Parameters {
    */
   void PenalizeEndeffectorForces();
 
+  /// Which costs should be used in the optimiation problem.
+  CostWeights costs_;
+
 private:
   /// Which constraints should be used in the optimization problem.
   UsedConstraints constraints_;
-
-  /// Which costs should be used in the optimiation problem.
-  CostWeights costs_;
 
   /// The durations of each base polynomial in the spline (lin+ang).
   VecTimes GetBasePolyDurations() const;

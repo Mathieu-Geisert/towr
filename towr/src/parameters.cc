@@ -108,7 +108,7 @@ void
 Parameters::PenalizeEndeffectorForces ()
 {
   // cost weighed by 1.0
-  costs_.push_back({ForcesCostID, 1.0});
+  costs_.push_back({ForcesCostZID, 1.0});
 }
 
 Parameters::VecTimes
